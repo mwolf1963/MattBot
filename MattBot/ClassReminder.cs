@@ -17,7 +17,7 @@ namespace MattBot
         private Boolean reminderNeedsReset = false;
         private static readonly object padlock = new object();
         private static ClassReminder instance = null;
-        private Dictionary<string, Class> classDictionary;
+        private Dictionary<string, Course> classDictionary;
         private DiscordSocketClient client;
         
         private void cClassReminder()
@@ -27,10 +27,10 @@ namespace MattBot
 
         private void getClassDictionary()
         {
-            classDictionary = new Dictionary<string, Class>();
-            classDictionary.Add("sdev250", new Class("sdev250", DayOfWeek.Wednesday, Convert.ToDateTime("17:30:00"), 668545020302721138));
-            classDictionary.Add("sdev253c", new Class("sdev253 section C", DayOfWeek.Thursday, Convert.ToDateTime("17:30:00"), 668545156462411796));            
-            classDictionary.Add("sdev265", new Class("sdev265",DayOfWeek.Monday, Convert.ToDateTime("18:00:00"), 668545275459272724));            
+            classDictionary = new Dictionary<string, Course>();
+            classDictionary.Add("sdev250", new Course("sdev250", DayOfWeek.Wednesday, Convert.ToDateTime("17:30:00"), 668545020302721138));
+            classDictionary.Add("sdev253c", new Course("sdev253 section C", DayOfWeek.Thursday, Convert.ToDateTime("17:30:00"), 668545156462411796));            
+            classDictionary.Add("sdev265", new Course("sdev265",DayOfWeek.Monday, Convert.ToDateTime("18:00:00"), 668545275459272724));            
         }
 
         public  ClassReminder(DiscordSocketClient client)
@@ -70,46 +70,46 @@ namespace MattBot
             }
         }
 
-        private void ItsClassTime(Class selectedClass)
+        private void ItsClassTime(Course selectedCourse)
         {
-            DayOfWeek day = selectedClass.GetClassDay();
+            DayOfWeek day = selectedCourse.GetClassDay();
             switch (day)
             {
                 case DayOfWeek.Monday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                     break;
                 case DayOfWeek.Tuesday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                     break;
                 case DayOfWeek.Wednesday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                     break;
                 case DayOfWeek.Thursday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                     break;
                 case DayOfWeek.Friday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                      break;
                 case DayOfWeek.Saturday:
-                    SendReminder(selectedClass);
+                    SendReminder(selectedCourse);
                     break;
             }
         }
 
         
 
-        private async void SendReminder(Class selectedClass)
+        private async void SendReminder(Course selectedCourse)
         {
-            var channel = client.GetChannel(selectedClass.GetChannelId()) as SocketTextChannel;
+            var channel = client.GetChannel(selectedCourse.GetChannelId()) as SocketTextChannel;
             if (channel == null) return;
-            selectedClass.ReminderSent();
+            selectedCourse.ReminderSent();
             reminderNeedsReset = true;
-            await channel.SendMessageAsync(selectedClass.GetName() + " starts in 1 hour!");
+            await channel.SendMessageAsync(selectedCourse.GetName() + " starts in 1 hour!");
             
 
         }
 
-        private class Class
+        private class Course
         {
             private String name;
             private ulong channelId;
@@ -117,7 +117,7 @@ namespace MattBot
             private DateTime reminderTime;
             private bool hasbeensent;
 
-            public Class(String name, DayOfWeek day, DateTime reminderTime, ulong  channelName)
+            public Course(String name, DayOfWeek day, DateTime reminderTime, ulong  channelName)
             {
                 this.name = name;
                 this.classDay = day;
